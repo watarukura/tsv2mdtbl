@@ -33,3 +33,7 @@ $ echo num1,num2,num3\n1,2,3 | tsv2mdtbl --delimiter=,
 | num1 | num2 | num3 |
 | 1 | 2 | 3 |
 ```
+
+| num1 | num2 | num3 |
+| --- | --- | --- |
+| 1 | 2 | 3 |

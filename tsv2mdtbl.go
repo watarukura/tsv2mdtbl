@@ -52,7 +52,6 @@ func (c *cli) run(args []string) int {
 	flags.BoolVar(&c.header, "header", false, "use header")
 	flags.BoolVar(&c.header, "H", false, "use header")
 	flags.BoolVar(&c.redmine, "redmine", false, "output redmine table")
-	flags.BoolVar(&c.redmine, "r", false, "output redmine table")
 
 	if err := flags.Parse(args[1:]); err != nil {
 		return exitCodeParseFlagErr

@@ -12,8 +12,6 @@ Usage of tsv2mdtbl:
     	delimiter character (default "\t")
   -header
     	use header
-  -redmine
-    	output redmine table
 ```
 
 ## Install

@@ -17,17 +17,17 @@ func TestTsv2MdTblStdInput(t *testing.T) {
 		{
 			input:      "-H",
 			inputStdin: "1\t2\n3\t4\n",
-			want:       "| 1 | 2 |\n| --- | --- |\n| 3 | 4 |\n",
+			want:       "| 1 | 2 |\n|---|---|\n| 3 | 4 |\n",
 		},
 		{
 			input:      "-header",
 			inputStdin: "1\t2\n3\t4\n",
-			want:       "| 1 | 2 |\n| --- | --- |\n| 3 | 4 |\n",
+			want:       "| 1 | 2 |\n|---|---|\n| 3 | 4 |\n",
 		},
 		{
 			input:      "--header",
 			inputStdin: "1\t2\n3\t4\n",
-			want:       "| 1 | 2 |\n| --- | --- |\n| 3 | 4 |\n",
+			want:       "| 1 | 2 |\n|---|---|\n| 3 | 4 |\n",
 		},
 		{
 			input:      "-d ,",
@@ -39,10 +39,15 @@ func TestTsv2MdTblStdInput(t *testing.T) {
 			inputStdin: "1,2\n3,4\n",
 			want:       "| 1 | 2 |\n| 3 | 4 |\n",
 		},
+		// {
+		// 	input:      "--header --redmine",
+		// 	inputStdin: "1\t2\n3\t4\n",
+		// 	want:       "|_. 1 |_. 2 |\n| 3 | 4 |\n",
+		// },
 		{
-			input:      "--header --redmine",
-			inputStdin: "1\t2\n3\t4\n",
-			want:       "|_. 1 |_. 2 |\n| 3 | 4 |\n",
+			input:      "-H",
+			inputStdin: "1\t2\n3\t4567890\n",
+			want:       "| 1 | 2       |\n|---|---------|\n| 3 | 4567890 |\n",
 		},
 	}
 	for i, c := range cases {
@@ -80,7 +85,7 @@ func TestTsv2MdTblFileInput(t *testing.T) {
 		{
 			input: "-H testdata/TEST1.txt",
 			// inputStdin: "",
-			want: "| 1 | 2 |\n| --- | --- |\n| 3 | 4 |\n",
+			want: "| 1 | 2 |\n|---|---|\n| 3 | 4 |\n",
 		},
 	}
 	for i, c := range cases {

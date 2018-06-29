@@ -10,8 +10,9 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"unicode/utf8"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 const usageText = `
@@ -32,11 +33,10 @@ type cli struct {
 	inStream             io.Reader
 	delimiter            string
 	header               bool
-	redmine              bool
 }
 
 func main() {
-	cli := &cli{outStream: os.Stdout, errStream: os.Stderr, inStream: os.Stdin, delimiter: "\t", header: false, redmine: false}
+	cli := &cli{outStream: os.Stdout, errStream: os.Stderr, inStream: os.Stdin, delimiter: "\t", header: false}
 	os.Exit(cli.run(os.Args))
 }
 
@@ -51,7 +51,6 @@ func (c *cli) run(args []string) int {
 	flags.StringVar(&c.delimiter, "d", "\t", "delimiter character")
 	flags.BoolVar(&c.header, "header", false, "use header")
 	flags.BoolVar(&c.header, "H", false, "use header")
-	flags.BoolVar(&c.redmine, "redmine", false, "output redmine table")
 
 	if err := flags.Parse(args[1:]); err != nil {
 		return exitCodeParseFlagErr
@@ -61,8 +60,7 @@ func (c *cli) run(args []string) int {
 
 	records := validateParam(param, c.inStream, c.delimiter)
 
-	output := csv2MdTbl(records, c.header, c.redmine)
-	write(c.outStream, output)
+	csv2MdTbl(records, c.header, c.outStream)
 
 	return exitCodeOK
 }
@@ -99,33 +97,19 @@ func validateParam(param []string, inStream io.Reader, delimiter string) (record
 	return records
 }
 
-func csv2MdTbl(records [][]string, header bool, redmine bool) (output []string) {
-	for i, r := range records {
-		outputLine := "| " + strings.Join(r, " | ") + " |"
-		output = append(output, outputLine)
-		if i == 0 && header {
-			rowLength := len(records[0])
-			separator := make([]string, rowLength)
-			for j := range separator {
-				separator[j] = "---"
-			}
-			separatorLine := "| " + strings.Join(separator, " | ") + " |"
-			output = append(output, separatorLine)
-		}
-		if i == 0 && header && redmine {
-			headerLine := "|_. " + strings.Join(r, " |_. ") + " |"
-			output = []string{}
-			output = append(output, headerLine)
-		}
+func csv2MdTbl(records [][]string, header bool, outStream io.Writer) {
+	table := tablewriter.NewWriter(outStream)
+	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+	table.SetCenterSeparator("|")
+	// Header左寄せ
+	table.SetHeaderAlignment(3)
+	if header {
+		table.SetHeader(records[0])
+		table.AppendBulk(records[1:])
+	} else {
+		table.AppendBulk(records)
 	}
-
-	return output
-}
-
-func write(outStream io.Writer, output []string) {
-	for _, o := range output {
-		fmt.Fprintln(outStream, o)
-	}
+	table.Render()
 }
 
 func fatal(err error, errorCode int) {

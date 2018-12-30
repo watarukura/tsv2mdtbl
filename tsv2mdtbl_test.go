@@ -92,6 +92,11 @@ func TestTsv2MdTblFileInput(t *testing.T) {
 			// inputStdin: "",
 			want: "| 1 | 2 |\n|---|---|\n| 3 | 4 |\n",
 		},
+		{
+			input: "--delimiter=, --header testdata/TEST2.txt",
+			// inputStdin: "",
+			want: "| NUM1 | NUM2   |\n|------|--------|\n|    1 |      2 |\n|    3 | 4<br>5 |\n",
+		},
 	}
 	for i, c := range cases {
 		// inStream.Reset()

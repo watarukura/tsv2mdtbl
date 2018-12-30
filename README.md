@@ -24,14 +24,29 @@ go get -u github.com/watarukura/tsv2mdtbl
 
 ```
 $ echo num1\tnum2\tnum3\n1\t2\t3 | tsv2mdtbl --header                                                                
-| num1 | num2 | num3 |
-| --- | --- | --- |
-| 1 | 2 | 3 |
-$ echo num1,num2,num3\n1,2,3 | tsv2mdtbl --delimiter=,
-| num1 | num2 | num3 |
-| 1 | 2 | 3 |
+| NUM1 | NUM2 | NUM3 |
+|------|------|------|
+|    1 |    2 |    3 |
 ```
 
-| num1 | num2 | num3 |
-| --- | --- | --- |
-| 1 | 2 | 3 |
+| NUM1 | NUM2 | NUM3 |
+|------|------|------|
+|    1 |    2 |    3 |
+
+```
+$ cat testdata/TEST2.txt
+"num1","num2"
+"1","2"
+"3","4
+5"
+$ tsv2mdtbl --header --delimiter "," testdata/TEST2.txt
+| NUM1 | NUM2   |
+|------|--------|
+|    1 |      2 |
+|    3 | 4<br>5 |
+```
+
+| NUM1 | NUM2   |
+|------|--------|
+|    1 |      2 |
+|    3 | 4<br>5 |

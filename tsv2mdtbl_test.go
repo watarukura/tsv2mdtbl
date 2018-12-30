@@ -49,6 +49,11 @@ func TestTsv2MdTblStdInput(t *testing.T) {
 			inputStdin: "1\t2\n3\t4567890\n",
 			want:       "| 1 | 2       |\n|---|---------|\n| 3 | 4567890 |\n",
 		},
+		{
+			input:      "-H",
+			inputStdin: "1\t2\n3\t\"4567\n890\"\n",
+			want:       "| 1 | 2           |\n|---|-------------|\n| 3 | 4567<br>890 |\n",
+		},
 	}
 	for i, c := range cases {
 		inStream.Reset()
@@ -64,7 +69,7 @@ func TestTsv2MdTblStdInput(t *testing.T) {
 		}
 
 		if outStream.String() != c.want {
-			t.Errorf("Case: %d, Unexpected output: %s, want: %s", i, outStream.String(), c.want)
+			t.Errorf("Case: %d, Unexpected output: \n%s, want: \n%s", i, outStream.String(), c.want)
 		}
 	}
 }
@@ -102,7 +107,7 @@ func TestTsv2MdTblFileInput(t *testing.T) {
 		}
 
 		if outStream.String() != c.want {
-			t.Errorf("Case: %d, Unexpected output: %s, want: %s", i, outStream.String(), c.want)
+			t.Errorf("Case: %d, Unexpected output: \n%s, want: \n%s", i, outStream.String(), c.want)
 		}
 	}
 }

@@ -13,6 +13,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/olekukonko/tablewriter"
+	"strings"
 )
 
 const usageText = `
@@ -68,7 +69,6 @@ func (c *cli) run(args []string) int {
 func validateParam(param []string, inStream io.Reader, delimiter string) (records [][]string) {
 	var file string
 	var reader io.Reader
-	var err error
 	switch len(param) {
 	case 0:
 		reader = bufio.NewReader(inStream)
@@ -89,11 +89,25 @@ func validateParam(param []string, inStream io.Reader, delimiter string) (record
 	csvr.Comma = delm
 	csvr.TrimLeadingSpace = true
 
-	records, err = csvr.ReadAll()
-	if err != nil {
-		fatal(err, exitCodeCsvFormatErr)
+	for {
+		record, err := csvr.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fatal(err, exitCodeCsvFormatErr)
+		}
+
+		// セル内改行は<br>タグに置換する
+		for i, f := range record {
+			if strings.Contains(f, "\n") {
+				record[i] = strings.Replace(f, "\n", "<br>", -1)
+			}
+		}
+		records = append(records, record)
 	}
 
+	//fmt.Println(records)
 	return records
 }
 
@@ -102,7 +116,7 @@ func csv2MdTbl(records [][]string, header bool, outStream io.Writer) {
 	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 	table.SetCenterSeparator("|")
 	// Header左寄せ
-	table.SetHeaderAlignment(3)
+	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	if header {
 		table.SetHeader(records[0])
 		table.AppendBulk(records[1:])

@@ -12,13 +12,14 @@ import (
 	"runtime"
 	"unicode/utf8"
 
-	"github.com/olekukonko/tablewriter"
 	"strings"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 const usageText = `
 Usage of %s:
-   %s [<inputFileName>]
+    %s [<inputFileName>]
 `
 const (
 	exitCodeOK = iota
@@ -87,6 +88,7 @@ func validateParam(param []string, inStream io.Reader, delimiter string) (record
 	csvr := csv.NewReader(reader)
 	delm, _ := utf8.DecodeLastRuneInString(delimiter)
 	csvr.Comma = delm
+	csvr.LazyQuotes = true
 	csvr.TrimLeadingSpace = true
 
 	for {

@@ -64,6 +64,11 @@ func TestTsv2MdTblStdInput(t *testing.T) {
 			inputStdin: "1,2\n,3\n",
 			want:       "| 1 | 2 |\n|   | 3 |\n",
 		},
+		{
+			input:      "-d \t",
+			inputStdin: "1\t2\t3\n4\t\t6\n",
+			want:       "| 1 | 2 | 3 |\n| 4 |   | 6 |\n",
+		},
 	}
 	for i, c := range cases {
 		inStream.Reset()

@@ -89,7 +89,7 @@ func validateParam(param []string, inStream io.Reader, delimiter string) (record
 	delm, _ := utf8.DecodeLastRuneInString(delimiter)
 	csvr.Comma = delm
 	csvr.LazyQuotes = true
-	csvr.TrimLeadingSpace = true
+	csvr.TrimLeadingSpace = false
 
 	for {
 		record, err := csvr.Read()
